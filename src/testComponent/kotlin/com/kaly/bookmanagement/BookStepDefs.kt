@@ -20,8 +20,8 @@ class BookStepDefs {
         RestAssured.baseURI = "http://localhost:$port"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
     }
-    @When("the user creates the book {string} written by {string}")
-    fun createBook(title: String, author: String) {
+    @When("the user creates the book {string} written by {string} booked by {string}")
+    fun createBook(title: String, author: String, booked: String) {
         given()
             .contentType(ContentType.JSON)
             .and()
@@ -29,7 +29,8 @@ class BookStepDefs {
                 """
                     {
                       "name": "$title",
-                      "author": "$author"
+                      "author": "$author",
+                      "booked": "$booked"
                     }
                 """.trimIndent()
             )

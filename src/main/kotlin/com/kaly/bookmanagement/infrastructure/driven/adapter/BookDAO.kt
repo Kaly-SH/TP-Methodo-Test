@@ -13,16 +13,19 @@ class BookDAO(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
             .query("SELECT * FROM BOOK", MapSqlParameterSource()) { rs, _ ->
                 Book(
                     name = rs.getString("title"),
-                    author = rs.getString("author")
+                    author = rs.getString("author"),
+                    booked = rs.getString("booked")
                 )
             }
     }
 
     override fun createBook(book: Book) {
         namedParameterJdbcTemplate
-            .update("INSERT INTO BOOK (title, author) values (:title, :author)", mapOf(
+            .update("INSERT INTO BOOK (title, author, booked) values (:title, :author, :booked)", mapOf(
                 "title" to book.name,
-                "author" to book.author
+                "author" to book.author,
+                "booked" to book.booked,
             ))
     }
+
 }

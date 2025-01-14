@@ -36,11 +36,11 @@ class BookDAOIT(
             performQuery(
                 // language=sql
                 """
-               insert into book (title, author)
+               insert into book (title, author, booked)
                values 
-                   ('Hamlet', 'Shakespeare'),
-                   ('Les fleurs du mal', 'Beaudelaire'),
-                   ('Harry Potter', 'Rowling');
+                   ('Hamlet', 'Shakespeare',''),
+                   ('Les fleurs du mal', 'Beaudelaire', 'Sandra Heraud'),
+                   ('Harry Potter', 'Rowling','');
             """.trimIndent()
             )
 
@@ -49,7 +49,7 @@ class BookDAOIT(
 
             // THEN
             res.shouldContainExactlyInAnyOrder(
-                Book("Hamlet", "Shakespeare"), Book("Les fleurs du mal", "Beaudelaire"), Book("Harry Potter", "Rowling")
+                Book("Hamlet", "Shakespeare",""), Book("Les fleurs du mal", "Beaudelaire", "Sandra Heraud"), Book("Harry Potter", "Rowling","")
             )
         }
 
