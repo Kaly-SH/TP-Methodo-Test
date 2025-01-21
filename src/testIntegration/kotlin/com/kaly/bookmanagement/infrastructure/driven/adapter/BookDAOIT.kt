@@ -36,7 +36,7 @@ class BookDAOIT(
             performQuery(
                 // language=sql
                 """
-               insert into book (title, author, booked)
+               insert into book (title, author, bookedBy)
                values 
                    ('Hamlet', 'Shakespeare',''),
                    ('Les fleurs du mal', 'Beaudelaire', 'Sandra Heraud'),

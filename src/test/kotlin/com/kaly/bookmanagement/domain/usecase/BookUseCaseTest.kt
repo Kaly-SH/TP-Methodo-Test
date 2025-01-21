@@ -40,4 +40,57 @@ class BookUseCaseTest : FunSpec({
         verify(exactly = 1) { bookPort.createBook(book) }
     }
 
+    test("get book should return the correct book") {
+        val bookId = 1
+        val expectedBook = Book("Les Misérables", "Victor Hugo")
+
+        every { bookPort.getBook(bookId) } returns expectedBook
+
+        val res = bookUseCase.getBook(bookId)
+
+        res shouldBe expectedBook
+    }
+
+    test("get book should be null if book not found") {
+        val bookId = 2
+
+        every { bookPort.getBook(bookId) } returns null
+
+        val res = bookUseCase.getBook(bookId)
+
+        res shouldBe null
+    }
+
+    test("reserve a book should mark the book as reserved") {
+        val bookId = 3
+        val bookToReserve = Book("1984", "George Orwell")
+
+        every { bookPort.getBook(bookId) } returns bookToReserve
+        justRun { bookPort.reserveBook(bookId, "Maxime Mourgues") }
+
+        bookUseCase.reserveBook(bookId, "Maxime Mourgues")
+
+        verify(exactly = 1) { bookPort.reserveBook(bookId, "Maxime Mourgues") }
+    }
+
+    test("reserve a book should throw exception if book already reserved") {
+        val bookId = 4
+        val alreadyReservedBook = Book("The Great Gatsby", "F. Scott Fitzgerald", "Sandra Heraud")
+
+        every { bookPort.getBook(bookId) } returns alreadyReservedBook
+
+        shouldThrow<IllegalStateException> {
+            bookUseCase.reserveBook(bookId, "Maxime Mourgues")
+        }
+    }
+
+    test("reserve a book should throw exception if the book does not exists") {
+        val bookId = 5
+        every { bookPort.getBook(bookId) } returns null
+
+        shouldThrow<IllegalArgumentException> {
+            bookUseCase.reserveBook(bookId, "Sandra Heraud")
+        }
+    }
+
 })

@@ -1,3 +1,3 @@
 package com.kaly.bookmanagement.domain.model
 
-data class Book(val name: String, val author: String, val booked: String? = null)
+data class Book(val name: String, val author: String, val bookedBy: String? = null)

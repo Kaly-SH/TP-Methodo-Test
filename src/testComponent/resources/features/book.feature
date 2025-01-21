@@ -4,6 +4,6 @@ Feature: the user can create and retrieve the books
     And the user creates the book "L'avare" written by "Molière" booked by "Sandra Heraud"
     And the user get all books
     Then the list should contains the following books in the same order
-      | name | author | booked |
+      | name | author | bookedBy |
       | L'avare | Molière | Sandra Heraud |
       | Les Misérables | Victor Hugo | Maxime Mourgues |
