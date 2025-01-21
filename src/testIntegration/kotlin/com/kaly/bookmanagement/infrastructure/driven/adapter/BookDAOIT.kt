@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -36,11 +37,11 @@ class BookDAOIT(
             performQuery(
                 // language=sql
                 """
-               insert into book (title, author, bookedBy)
+               insert into book (title, author, booked_by)
                values 
-                   ('Hamlet', 'Shakespeare',''),
+                   ('Hamlet', 'Shakespeare', null),
                    ('Les fleurs du mal', 'Beaudelaire', 'Sandra Heraud'),
-                   ('Harry Potter', 'Rowling','');
+                   ('Harry Potter', 'Rowling', null);
             """.trimIndent()
             )
 
@@ -49,7 +50,7 @@ class BookDAOIT(
 
             // THEN
             res.shouldContainExactlyInAnyOrder(
-                Book("Hamlet", "Shakespeare",""), Book("Les fleurs du mal", "Beaudelaire", "Sandra Heraud"), Book("Harry Potter", "Rowling","")
+                Book("Hamlet", "Shakespeare", null), Book("Les fleurs du mal", "Beaudelaire", "Sandra Heraud"), Book("Harry Potter", "Rowling",null)
             )
         }
 
@@ -69,11 +70,60 @@ class BookDAOIT(
                 this["id"].shouldNotBeNull().shouldBeInstanceOf<Int>()
                 this["title"].shouldBe("Les misérables")
                 this["author"].shouldBe("Victor Hugo")
+                this["booked_by"].shouldBe(null)
+            }
+        }
+
+        test("get an existent book from db") {
+            // GIVEN
+            performQuery(
+                """
+                INSERT INTO book (id, title, author, booked_by)
+                VALUES (1, 'Comment faire des tests unitaire efficaces ?', 'Maxime Mourgues & Sandra Heraud', null)                    
+                """.trimIndent()
+            )
+            // THEN
+            val res = bookDAO.getBook(1)
+
+            res.shouldNotBeNull()
+            assertSoftly(res) {
+                name shouldBe "Comment faire des tests unitaire efficaces ?"
+                author shouldBe "Maxime Mourgues & Sandra Heraud"
+                booked_by shouldBe null
+            }
+        }
+
+        test("get a non-existent book from db") {
+            // GIVEN
+            // THEN
+            val res = bookDAO.getBook(999) // peut être techniquement n'importe quel id puisque la db est réinitialisée
+
+            res.shouldBeNull()
+        }
+
+        test("reserve a book from db") {
+            // GIVEN
+            performQuery(
+                """
+                INSERT INTO book (id, title, author, booked_by)
+                VALUES (1, 'Le Château de Hurle', 'Diana Wynne Jones', null)                    
+                """.trimIndent()
+            )
+            // THEN
+            bookDAO.reserveBook(1,"Sandra Heraud")
+
+            val res = bookDAO.getBook(1)
+
+            res.shouldNotBeNull()
+            assertSoftly(res) {
+                name shouldBe "Le Château de Hurle"
+                author shouldBe "Diana Wynne Jones"
+                booked_by shouldBe "Sandra Heraud"
             }
         }
 
         afterSpec {
-            container.stop()
+//            container.stop()
         }
     }
 

@@ -27,7 +27,7 @@ class BookUseCase(
         if (book == null) {
             throw IllegalArgumentException("The book provided could not be found.")
         }
-        if (book.bookedBy != null) {
+        if (book.booked_by != null) {
             throw IllegalStateException("This book is already booked. Please choose another book instead.")
         }
         bookPort.reserveBook(bookId, reservedBy)

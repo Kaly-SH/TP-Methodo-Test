@@ -30,7 +30,7 @@ class InMemoryBookPort : BookPort {
         if (book == null) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "The book provided could not be found.")
         }
-        books[bookId] = book.copy(bookedBy = reservedBy)
+        books[bookId] = book.copy(booked_by = reservedBy)
     }
 
     fun clear() {

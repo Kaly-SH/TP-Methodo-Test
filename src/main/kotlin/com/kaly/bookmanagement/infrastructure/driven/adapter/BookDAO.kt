@@ -14,17 +14,17 @@ class BookDAO(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
                 Book(
                     name = rs.getString("title"),
                     author = rs.getString("author"),
-                    bookedBy = rs.getString("bookedBy")
+                    booked_by = rs.getString("booked_by")
                 )
             }
     }
 
     override fun createBook(book: Book) {
         namedParameterJdbcTemplate
-            .update("INSERT INTO BOOK (title, author, bookedBy) values (:title, :author, :bookedBy)", mapOf(
+            .update("INSERT INTO BOOK (title, author, booked_by) values (:title, :author, :booked_by)", mapOf(
                 "title" to book.name,
                 "author" to book.author,
-                "bookedBy" to book.bookedBy,
+                "booked_by" to book.booked_by,
             ))
     }
 
@@ -34,14 +34,14 @@ class BookDAO(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate
                 Book(
                     name = rs.getString("title"),
                     author = rs.getString("author"),
-                    bookedBy = rs.getString("bookedBy")
+                    booked_by = rs.getString("booked_by")
                 )
         }.firstOrNull()
     }
 
     override fun reserveBook(bookId: Int, reservedBy: String) {
         namedParameterJdbcTemplate
-            .update("UPDATE BOOK SET bookedBy = :name WHERE id = :id", mapOf(
+            .update("UPDATE BOOK SET booked_by = :name WHERE id = :id", mapOf(
                 "name" to reservedBy,
                 "id" to bookId,
             ))

@@ -40,9 +40,15 @@ class BookController(
 
     @CrossOrigin
     @PostMapping("/reserve")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     fun ReserveBook(@RequestBody reserveBookDTO: ReserveBookDTO) {
-        bookUseCase.reserveBook(reserveBookDTO.bookId, reserveBookDTO.name)
+        try {
+            bookUseCase.reserveBook(reserveBookDTO.bookId, reserveBookDTO.name)
+        } catch (error: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, error.message)
+        } catch (error: IllegalStateException) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, error.message)
+        }
     }
 
 }
