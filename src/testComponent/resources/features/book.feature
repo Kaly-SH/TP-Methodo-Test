@@ -7,3 +7,17 @@ Feature: the user can create and retrieve the books
       | name | author | booked_by |
       | L'avare | Molière | Sandra Heraud |
       | Les Misérables | Victor Hugo | Maxime Mourgues |
+
+  Scenario: user reserves a book successfully
+    Given the user creates the book "1984" written by "George Orwell"
+    When the user reserves the book with id 3 for "Sandra Heraud"
+    Then the reservation should be successful
+
+  Scenario: user tries to reserve a book that is already reserved
+    Given the user creates the book "Hunger Games" written by "Suzan Collins" booked by "Sandra Heraud"
+    When the user reserves the book with id 4 for "Maxime Mourgues"
+    Then the reservation should fail with status 409
+
+  Scenario: user tries to reserve a non-existent book
+    When the user reserves the book with id 999 for "Maxime Mourgues"
+    Then the reservation should fail with status 404
