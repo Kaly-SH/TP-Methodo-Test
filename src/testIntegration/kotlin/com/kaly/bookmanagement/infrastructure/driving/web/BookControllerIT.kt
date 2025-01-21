@@ -153,8 +153,7 @@ class BookControllerIT(
 
     test("rest route reserve a book already reserved") {
         val bookId = 5
-        every { bookUseCase.getBook(bookId) } returns Book("Gardiens des cités perdues", "Shannon Messenger", "Sandra Heraud")
-        justRun { bookUseCase.reserveBook(bookId, "Sandra Heraud") }
+        every { bookUseCase.reserveBook(bookId, "Sandra Heraud") } throws IllegalStateException()
 
         mockMvc.post("/books/reserve") {
             // language=json
@@ -169,14 +168,11 @@ class BookControllerIT(
         }.andExpect {
             status { isConflict() }
         }
-
-//        shouldThrow<IllegalStateException> { bookUseCase.reserveBook(bookId, "Sandra Heraud") }
     }
 
     test("rest route reserve a non-existent book") {
         val bookId = 1
-        every { bookUseCase.getBook(bookId) } returns null
-        justRun { bookUseCase.reserveBook(bookId, "Maxime Mourgues") }
+        every { bookUseCase.reserveBook(bookId, "Maxime Mourgues") } throws IllegalArgumentException()
 
         mockMvc.post("/books/reserve") {
             // language=json
@@ -192,6 +188,5 @@ class BookControllerIT(
             status { isNotFound() }
         }
 
-//        shouldThrow<IllegalArgumentException> { bookUseCase.reserveBook(bookId, "Maxime Mourgues") }
     }
 })

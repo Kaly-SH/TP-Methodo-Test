@@ -45,7 +45,7 @@ class BookController(
         try {
             bookUseCase.reserveBook(reserveBookDTO.bookId, reserveBookDTO.name)
         } catch (error: IllegalArgumentException) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, error.message)
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, error.message)
         } catch (error: IllegalStateException) {
             throw ResponseStatusException(HttpStatus.CONFLICT, error.message)
         }
